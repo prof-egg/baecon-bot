@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMembers, GatewayIntentBits.MessageContent], partials: [Partials.Channel, Partials.Message] });
 
-import { CommandHandler, ECommandTags } from "./library/classes/CommandHandler";
+import * as Command from "./library/classes/CommandHandler";
 import * as UserAccount from "./library/classes/AccountManager";
 import { Util } from "./library/classes/Util";
 
@@ -14,15 +14,11 @@ import { Debug } from "./library/classes/Debug";
 require("dotenv").config()
 require("./commands/routines/catchwarnings")
 
-// let aliasesCollection = new Discord.Collection(); // uncomment this if you ever setup text commands
-
-let commandHandler = new CommandHandler("dist/commands")
-
 client.on("ready", async () => {
 
     // Load commands and routines (cmd loader called here because client.guilds.cache is referenced, and you can't reference it until the client is "ready")
-    commandHandler.loadSlashCommandParentFolder(client, "dist/commands/slash_commands")
-    commandHandler.loadTextCommandParentFolder(client, "dist/commands/text_commands")
+    Command.Handler.loadSlashCommandParentFolder(client, "dist/commands/slash_commands")
+    Command.Handler.loadTextCommandParentFolder(client, "dist/commands/text_commands")
 
     // Ready
     client.user?.setActivity(`${clientconfig.prefix}help`)
@@ -36,7 +32,7 @@ client.on("interactionCreate", async (interaction) => {
     if (!interaction.isCommand()) return
 
     interaction = interaction as Discord.ChatInputCommandInteraction
-    commandHandler.getAndExecuteSlashCommand(interaction, client)
+    Command.Handler.getAndExecuteSlashCommand(interaction, client)
 
 })
 
@@ -51,7 +47,7 @@ client.on("messageCreate", async (message) => {
     // ADD A COOLDOWN SECTION RIGHT HERE
 
     // Check if command used has the currecy tag, if it does and user doesnt have an account, create one, if they do have an account NOTE: ADD SOME OTHER STUFF
-    if (commandHandler.textCommandHasTag(message, ECommandTags.Currency)) {
+    if (Command.Handler.textCommandHasTag(message, Command.ECommandTags.Currency)) {
 
         // Try and get account
         let account = await UserAccount.Manager.getUserAccount(message.author.id)
@@ -75,11 +71,11 @@ client.on("messageCreate", async (message) => {
         if (isPlayingGame) return
         
         // Execute currency command with account option
-        commandHandler.getAndExecuteTextCommand(message, client, account);
+        Command.Handler.getAndExecuteTextCommand(message, client, account);
      
     } else {
         // If command does not have currency command tag, execute command without account option
-        let ranCommand = commandHandler.getAndExecuteTextCommand(message, client);
+        let ranCommand = Command.Handler.getAndExecuteTextCommand(message, client);
     }
 })
 

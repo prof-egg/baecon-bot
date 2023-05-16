@@ -7,7 +7,7 @@ import clientconfig from "../../config/client.json"
 import { Debug } from "./Debug";
 import { TUserDoc } from "../models/UserData";
 
-export class CommandHandler {
+export class Handler {
 
     // NOTE: make a function that reads a folder that holds specifically slash command folders (this part completed), and a function that reads a folder that holds specifically text command folders, that way the class has more use cases
 
@@ -20,24 +20,16 @@ export class CommandHandler {
     // OTHER OTHER OTHER NOTE: make it so the command handler can load tags
 
 
-    private _cmdLoadedCount = 0; // used to log how many commands have loaded in the loadSlashCommandFolder() method
-    private _relNodeRequirePathAddon: string = ""; // used in the loadSlashCommandFunction() method so that it can have a statement like this: var slashCommandFileData = require("../../commands/dev_commands/bot_stats.js")
+    private static _cmdLoadedCount = 0; // used to log how many commands have loaded in the loadSlashCommandFolder() method
+    // private static _relNodeRequirePathAddon: string = ""; // used in the loadSlashCommandFunction() method so that it can have a statement like this: var slashCommandFileData = require("../../commands/dev_commands/bot_stats.js")
     
-    private _slashCommandsCollection: Discord.Collection<string, ISlashCommandFunc> = new Discord.Collection(); // <key: commandName, value: slashCommandFunction> 
-    private _textCommandsCollection: Discord.Collection<string, ITextCommandFunc> = new Discord.Collection(); // there is a key value pair for the command name AND the aliases, so this does store multiple of the same command function
-    private _tagsCollection: Discord.Collection<string, ECommandTags[]> = new Discord.Collection(); // Stores the tags with the command name
+    private static _slashCommandsCollection: Discord.Collection<string, ISlashCommandFunc> = new Discord.Collection(); // <key: commandName, value: slashCommandFunction> 
+    private static _textCommandsCollection: Discord.Collection<string, ITextCommandFunc> = new Discord.Collection(); // there is a key value pair for the command name AND the aliases, so this does store multiple of the same command function
+    private static _tagsCollection: Discord.Collection<string, ECommandTags[]> = new Discord.Collection(); // Stores the tags with the command name
 
-    get SlashCommandsCollection() { return this._slashCommandsCollection; }
-    get TextCommandsCollection() { return this._textCommandsCollection; }
-    get TagsCollection() { return this._tagsCollection; }
-
-    constructor(commandFolderNameOrPathAddon: string) {
-
-        if (!commandFolderNameOrPathAddon) { Util.colorLog("red", `[${Util.consoleTimeStamp()}] [CommandHandler/ERROR]: the string parameter commandFolderNameOrPathAddon is required`); return }
-
-        this._relNodeRequirePathAddon = this._getNodeRequirePathAddon(commandFolderNameOrPathAddon)
-
-    }
+    static get SlashCommandsCollection() { return this._slashCommandsCollection; }
+    static get TextCommandsCollection() { return this._textCommandsCollection; }
+    static get TagsCollection() { return this._tagsCollection; }
 
     /**
      * Tries to calculate the relNodeRequirePathAddon
@@ -75,7 +67,7 @@ export class CommandHandler {
     }
 
 
-    textCommandHasTag(message: Discord.Message, tag: ECommandTags): boolean {
+    static textCommandHasTag(message: Discord.Message, tag: ECommandTags): boolean {
         let commandName = this.getTextCommandName(message)
         if (!commandName) return false;
 
@@ -88,7 +80,7 @@ export class CommandHandler {
         return false;
     }
 
-    slashCommandHasTag(interaction: Discord.ChatInputCommandInteraction, tag: ECommandTags): boolean {
+    static slashCommandHasTag(interaction: Discord.ChatInputCommandInteraction, tag: ECommandTags): boolean {
         let commandTags = this._tagsCollection.get(interaction.commandName)
         if (!commandTags) return false;
 
@@ -98,7 +90,7 @@ export class CommandHandler {
         return false;
     }
 
-    getAndExecuteTextCommand(message: Discord.Message, client: Discord.Client, userAccount?: TUserDoc): boolean {
+    static getAndExecuteTextCommand(message: Discord.Message, client: Discord.Client, userAccount?: TUserDoc): boolean {
 
         // NOTE: debug logs are commented out on getAndExecuteTextCommand() and not getAndExecuteSlashCommand() because it is expected for people to mess up a command name for text based commands
         // it is worrying tho if someone messes up a slash command since it is built in to discord
@@ -116,7 +108,7 @@ export class CommandHandler {
         return true;
     }
 
-    getAndExecuteSlashCommand(interaction: Discord.ChatInputCommandInteraction, client: Discord.Client): boolean {
+    static getAndExecuteSlashCommand(interaction: Discord.ChatInputCommandInteraction, client: Discord.Client): boolean {
 
         // NOTE: MAKE IT SO THAT THIS COMMAND RETURNS BOOLEAN BASED ON IF THE SLASH COMMAND WAS SUCCESFULLY RAN OR NOT THIS IS SO THAT IF IT RETURNS FALSE, 
         // YOU CAN CALL ANOTHER FUNCTION TO DELETE THE SLASH COMMAND, (presuming it returned false because the slash command doesnt exist)
@@ -130,13 +122,13 @@ export class CommandHandler {
         return true;
     }
 
-    getTextCommandArgs(message: Discord.Message): string[] {
+    static getTextCommandArgs(message: Discord.Message): string[] {
         let args = message.content.toLowerCase().slice(clientconfig.prefix.length).trim().split(/ +/g);
         args.shift()
         return args
     }
 
-    getTextCommandName(message: Discord.Message): string | undefined {
+    static getTextCommandName(message: Discord.Message): string | undefined {
         return message.content.toLowerCase().slice(clientconfig.prefix.length).trim().split(/ +/g).shift()?.toLocaleLowerCase()
     }
 
@@ -145,7 +137,7 @@ export class CommandHandler {
      * This is used to load a command folder that houses slash command folders inside of it. This is so that if you have multiple slash command folders, intstead of calling `CommandHandler.loadSlashCommandFolder()`
      * on each one, you can move all those folders into a parent folder, and call `CommandHandler.loadSlashCommandParentFolder()` on that parent folder.
      */
-    loadTextCommandParentFolder(client: Discord.Client, textCmdParentFolderPath: string): void {
+    static loadTextCommandParentFolder(client: Discord.Client, textCmdParentFolderPath: string): void {
 
         try {
             var textCmdFolderArr = fs.readdirSync(textCmdParentFolderPath)
@@ -168,7 +160,7 @@ export class CommandHandler {
      * This is used to load a command folder that houses slash command folders inside of it. This is so that if you have multiple slash command folders, intstead of calling `CommandHandler.loadSlashCommandFolder()`
      * on each one, you can move all those folders into a parent folder, and call `CommandHandler.loadSlashCommandParentFolder()` on that parent folder.
      */
-    loadSlashCommandParentFolder(client: Discord.Client, slashCmdParentFolderPath: string, registerSlashCmdGlobally = false): void {
+    static loadSlashCommandParentFolder(client: Discord.Client, slashCmdParentFolderPath: string, registerSlashCmdGlobally = false): void {
 
         try {
             var slashCmdFolderArr = fs.readdirSync(slashCmdParentFolderPath)
@@ -187,19 +179,19 @@ export class CommandHandler {
         this.loadSlashCommandFolderArr(client, slashCmdFolderArr, registerSlashCmdGlobally)
     }
 
-    loadTextCommandFolderArr(client: Discord.Client, textCmdFolderPathArr: string[]): void {
+    static loadTextCommandFolderArr(client: Discord.Client, textCmdFolderPathArr: string[]): void {
         textCmdFolderPathArr.forEach((textCmdFolderPath) => {
             this.loadTextCommandFolder(client, textCmdFolderPath)
         })
     }
 
-    loadSlashCommandFolderArr(client: Discord.Client, slashCmdFolderPathArr: string[], registerSlashCmdGlobally = false): void {
+    static loadSlashCommandFolderArr(client: Discord.Client, slashCmdFolderPathArr: string[], registerSlashCmdGlobally = false): void {
         slashCmdFolderPathArr.forEach((slashCmdFolderPath) => {
             this.loadSlashCommandFolder(client, slashCmdFolderPath, registerSlashCmdGlobally)
         })
     }
 
-    loadTextCommandFolder(client: Discord.Client, textCmdFolderPath: string): void {
+    static loadTextCommandFolder(client: Discord.Client, textCmdFolderPath: string): void {
 
         // load js files from folder into an array
         try {
@@ -228,7 +220,7 @@ export class CommandHandler {
         this._cmdLoadedCount = 0;
     }
 
-    loadSlashCommandFolder(client: Discord.Client, slashCmdFolderPath: string, registerSlashCmdGlobally = false): void {
+    static loadSlashCommandFolder(client: Discord.Client, slashCmdFolderPath: string, registerSlashCmdGlobally = false): void {
 
         // load js files from folder into an array
         try {
@@ -257,7 +249,7 @@ export class CommandHandler {
         this._cmdLoadedCount = 0;
     }
 
-    loadTextCommandFile(client: Discord.Client, textCmdFilePath: string): void {
+    static loadTextCommandFile(client: Discord.Client, textCmdFilePath: string): void {
         let textCmdFileName = "";
         try {
             textCmdFileName = textCmdFilePath.split("/")[textCmdFilePath.split("/").length - 1]
@@ -268,7 +260,7 @@ export class CommandHandler {
         this._loadTextCommandFunctionAndTags(textCmdFilePath, textCmdFileName)
     }
 
-    loadSlashCommandFile(client: Discord.Client, slashCmdFilePath: string, registerSlashCmdGlobally = false): void {
+    static loadSlashCommandFile(client: Discord.Client, slashCmdFilePath: string, registerSlashCmdGlobally = false): void {
 
         let slashCmdFileName = "";
         try {
@@ -285,11 +277,11 @@ export class CommandHandler {
     /**
      * Return a NodeRequire of the file, and loads the command function and command tags into their respective collections with the command name as the keys.
      */
-    private _loadTextCommandFunctionAndTags(textCmdFilePath: string, textCmdFileName: string): TTextCommandFile | void {
+    private static _loadTextCommandFunctionAndTags(textCmdFilePath: string, textCmdFileName: string): TTextCommandFile | void {
 
         // Require the file data and store it into the fileData variable
         try { // if you uncomment the try catch, change the "@returns {NodeRequire}" to "@returns {NodeRequire?}"
-            var textCmdFileData: TTextCommandFile = require(`${this._relNodeRequirePathAddon}${textCmdFilePath}`)
+            var textCmdFileData: TTextCommandFile = require(`${process.cwd()}/${textCmdFilePath}`)
         } catch (e) {
             return Debug.logError(e as string, "CommandHandler")
         }
@@ -317,11 +309,11 @@ export class CommandHandler {
     /**
      * Return a NodeRequire of the file, and loads the command function and command tags into their respective collections with the command name as the keys.
      */
-    private _loadSlashCommandFunctionAndTags(slashCmdFilePath: string, slashCmdFileName: string): TSlashCommandFile | void {
+    private static _loadSlashCommandFunctionAndTags(slashCmdFilePath: string, slashCmdFileName: string): TSlashCommandFile | void {
 
         // Require the file data and store it into the fileData variable
         try { // if you uncomment the try catch, change the "@returns {NodeRequire}" to "@returns {NodeRequire?}"
-            var slashCmdFileData: TSlashCommandFile = require(`${this._relNodeRequirePathAddon}${slashCmdFilePath}`)
+            var slashCmdFileData: TSlashCommandFile = require(`${process.cwd()}/${slashCmdFilePath}`)
         } catch (e) {
             return Util.colorLog("red", `[${Util.consoleTimeStamp()}] [CommandHandler/ERROR]: ${e}`);
         }
@@ -342,7 +334,7 @@ export class CommandHandler {
         return slashCmdFileData;
     }
 
-    private _registerSlashCommandBuildData(client: Discord.Client, slashCmdFileData: TSlashCommandFile, slashCmdFileName: string, registerSlashCmdGlobally = false): Promise<void> {
+    private static _registerSlashCommandBuildData(client: Discord.Client, slashCmdFileData: TSlashCommandFile, slashCmdFileName: string, registerSlashCmdGlobally = false): Promise<void> {
 
         // NOTE: Make two variants of the function: registerSlashCommandBuildData(). One that registers to a guild, one that registers globally
 
