@@ -14,7 +14,7 @@ export class Manager {
                 await newAccountData.save()
                 resolve(newAccountData as TUserDoc)
             } catch (e) {
-                Debug.logError(<string>e, "AccountManager")
+                Debug.logError(<string>e, `${require("path").basename(__filename)}`)
                 resolve(undefined);
             }
         })
@@ -29,7 +29,7 @@ export class Manager {
 
                 resolve(account as TUserDoc);
             } catch (e) {
-                Debug.logError(<string>e, "AccountManager")
+                Debug.logError(<string>e, `${require("path").basename(__filename)}`)
                 resolve(undefined)
             }
         })
@@ -37,10 +37,14 @@ export class Manager {
 
     /**DOCUMENTATION NEEDED */
     static addItem(account: TUserDoc, itemKey: string, amount = 1, saveAccount = false): Promise<void> {
-        return new Promise(async (resolve) => {
+        return new Promise(async (resolve, reject) => {
             let currentAmount = account.items.get(itemKey)
 
-            if (!Item.Handler.doesItemExistInWarehouse(itemKey)) throw new Error(`Tried to add item "` + itemKey + `" which does not exist in itemJSONWarehouse to user account.`)
+            if (!Item.Handler.doesItemExistInWarehouse(itemKey)) { 
+                let errMsg = `Tried to add item "${itemKey}" which does not exist in itemJSONWarehouse to user account.`
+                Debug.logError(errMsg, `${require("path").basename(__filename)}`)
+                reject(`Tried to add item "${itemKey}" which does not exist in itemJSONWarehouse to user account.`) 
+            }
 
             try {
                 if (currentAmount) account.items.set(itemKey, amount + currentAmount)
@@ -49,7 +53,7 @@ export class Manager {
                 if (saveAccount) await account.save()
                 resolve()
             } catch (e) {
-                Debug.logError(<string>e, "AccountManager")
+                Debug.logError(<string>e, `${require("path").basename(__filename)}`)
                 resolve()
             }
         })
@@ -71,7 +75,7 @@ export class Manager {
                 if (saveAccount) await account.save()
                 resolve()
             } catch (e) {
-                Debug.logError(<string>e, "AccountManager")
+                Debug.logError(<string>e, `${require("path").basename(__filename)}`)
                 resolve()
             }
         })
@@ -85,7 +89,7 @@ export class Manager {
                 if (saveAccount) await account.save()
                 resolve()
             } catch (e) {
-                Debug.logError(<string>e, "AccountManager")
+                Debug.logError(<string>e, `${require("path").basename(__filename)}`)
                 resolve()
             }
         })

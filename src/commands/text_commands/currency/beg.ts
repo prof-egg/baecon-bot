@@ -2,12 +2,13 @@ import Discord, { ColorResolvable, User } from "discord.js";
 import { ITextCommandFunc, ECommandTags } from "../../../library/classes/CommandHandler";
 import { Util } from "../../../library/classes/Util";
 import * as UserAccount from "../../../library/classes/AccountManager";
-import * as Item from "../../../library/classes/ItemHandler";
+import * as Items from "../../../config/Items";
 import { Debug } from "../../../library/classes/Debug";
 
 import emojiID from "../../../config/emoji.json"
 import cooldowns from "../../../config/cooldowns.json"
 import colorconfig from "../../../config/colors.json";
+import clientconfig from "../../../config/client.json";
 
 const commandFunction: ITextCommandFunc = async (message, args, client, authorAccount) => {
 
@@ -41,9 +42,15 @@ const commandFunction: ITextCommandFunc = async (message, args, client, authorAc
     // let giveItem = Util.weightedCoinFlip(5);
     if (giveItem) {
 
-        UserAccount.Manager.addItem(authorAccount, Item.cob.key)
+        try {
+            await UserAccount.Manager.addItem(authorAccount, Items.cob.key)
+        } catch (e) {
+            Debug.logError(<string>e, `${require("path").basename(__filename)}`)
+            return message.channel.send(clientconfig.commandErrorMessage)
+        }
+
         // Set embed message 
-        embed.setDescription(`A stranger gave you a ${Item.cob.name}!`)
+        embed.setDescription(`A stranger gave you a ${Items.cob.name}!`)
     } else {
         // Get random amount of bits, add it to user account, and update cooldown
         let bitsGathered = Util.getRandomInt(10, 40)
