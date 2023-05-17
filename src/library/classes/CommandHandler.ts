@@ -1,7 +1,7 @@
 import Discord from "discord.js"
 import fs from "fs"
 
-import { Util } from "./Util"
+import Util from "./Util"
 
 import clientconfig from "../../config/client.json"
 import { Debug } from "./Debug";

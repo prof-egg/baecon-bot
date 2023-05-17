@@ -1,6 +1,6 @@
 import Discord, { ColorResolvable } from "discord.js";
 import { ITextCommandFunc, ECommandTags } from "../../../library/classes/CommandHandler";
-import { Util } from "../../../library/classes/Util";
+import Util from "../../../library/classes/Util";
 import { Manager } from "../../../library/classes/AccountManager";
 import { Debug } from "../../../library/classes/Debug";
 

@@ -3,7 +3,7 @@ import Discord, { ColorResolvable } from "discord.js"
 import colorconfig from "../../config/colors.json";
 
 type isNumberTypeOptions = { sign?: "positive" | "negative", whole?: boolean, isBelow?: number, isAbove?: number, isAboveOrEqualTo?: number, isBelowOrEqualTo?: number }
-export class Util {
+export default class Util {
 
 
     /**Has a 1 in `odds` chance to return true */

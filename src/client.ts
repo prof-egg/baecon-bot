@@ -6,7 +6,8 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBit
 
 import * as Command from "./library/classes/CommandHandler";
 import * as UserAccount from "./library/classes/AccountManager";
-import { Util } from "./library/classes/Util";
+import * as Item from "./library/classes/ItemHandler"
+import Util from "./library/classes/Util";
 
 import clientconfig from "./config/client.json"
 import { Debug } from "./library/classes/Debug";
@@ -19,6 +20,9 @@ client.on("ready", async () => {
     // Load commands and routines (cmd loader called here because client.guilds.cache is referenced, and you can't reference it until the client is "ready")
     Command.Handler.loadSlashCommandParentFolder(client, "dist/commands/slash_commands")
     Command.Handler.loadTextCommandParentFolder(client, "dist/commands/text_commands")
+
+    // Do item stuff
+    Item.Handler.loadWarehouse("dist/config/items")
 
     // Ready
     client.user?.setActivity(`${clientconfig.prefix}help`)

@@ -3,7 +3,7 @@ import { ITextCommandFunc, ECommandTags } from "../../../library/classes/Command
 import Discord, { ColorResolvable } from "discord.js";
 import clientconfig from "../../../config/client.json";
 import colorconfig from "../../../config/colors.json";
-import { Util } from "../../../library/classes/Util";
+import Util from "../../../library/classes/Util";
 import { Manager } from "../../../library/classes/AccountManager";
 import { Debug } from "../../../library/classes/Debug";
 
