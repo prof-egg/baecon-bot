@@ -38,8 +38,8 @@ const commandFunction: ITextCommandFunc = async (message, args, client, authorAc
         .setColor(colorconfig.main as ColorResolvable)
 
     // Decide to give an item or cash
-    let giveItem = Util.weightedCoinFlip(1);
-    // let giveItem = Util.weightedCoinFlip(5);
+    // let giveItem = Util.weightedCoinFlip(1); // uncomment for testing item handling
+    let giveItem = Util.weightedCoinFlip(5);
     if (giveItem) {
 
         try {
@@ -65,7 +65,7 @@ const commandFunction: ITextCommandFunc = async (message, args, client, authorAc
 
     // save and update cooldown
     try {
-        // UserAccount.Manager.updateCooldown(authorAccount, cooldowns.beg) // saved on another line so that this can be commented out easily for testing
+        UserAccount.Manager.updateCooldown(authorAccount, cooldowns.beg) // saved on another line so that this can be commented out easily for testing
         await authorAccount.save()
     } catch (e) {
         msgSent.reply(`There was an error with finding ${message.author.username}'s account. Please try again later`)
