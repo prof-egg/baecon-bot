@@ -1,0 +1,12 @@
+{
+    "beg": {
+        "key": "beg",
+        "time": 30000,
+        "isItemCooldown": false
+    },
+    "blackjack": {
+        "key": "blackjack",
+        "time": 30000,
+        "isItemCooldown": false
+    }
+}

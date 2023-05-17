@@ -1,0 +1,10 @@
+{
+    "prefix": "b-",
+    "version": "Beta v4",
+    "id": "738227768596103180",
+    "name": "Baecon Bot",
+    "homeGuild": {
+        "id": "822568375359504424"
+    },
+    "commandErrorMessage": "Sorry this doesn't seem to be working at the moment. Please try again later."
+}
