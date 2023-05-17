@@ -1,3 +1,6 @@
+import { Debug } from "./Debug"
+import Util from "./Util"
+
 export type TItem = {
     name: string,
     key: string,
@@ -23,49 +26,50 @@ export enum EItemShopType {
     Crate = "Crate",
 }
 
-// ITEM JSON
-export const cob: TItem = {
-    name: "Container of Bacon",
-    key: "cob",
-    discordEmojiID: "738470510702362745",
-    itemType: EItemType.Item,
-    shopData: { sellable: false, price: 125 },
-}
-
-export const cCrate: TItem = {
-    name: "Cardboard Crate",
-    key: "cCrate",
-    discordEmojiID: "822570562382725173",
-    itemType: EItemType.Item,
-    shopData: {
-        shop: {
-            type: EItemShopType.Crate, 
-            tag: "Worst crate and has a high chance to not give an item",
-        },
-        sellable: true, 
-        price: 500
-    },
-}
-
 export class Handler {
 
-    private static itemJSONWarehouse: Map<string, TItem> = new Map([
-        [cob.key, cob],
-        [cCrate.key, cCrate]
-    ])
+    private static _itemJSONWarehouse: Map<string, TItem> = new Map()
 
+    /**UNDOCUMENTED */
+    static loadWarehouse(itemConfigPath: string) {
+        let fullPath = `${process.cwd()}/${itemConfigPath}`
+        let configObject = require(fullPath)
+
+        let keys = Object.keys(configObject);
+        let itemsLoaded = 0
+
+        if (keys.length == 1) Util.colorLog("yellow", `loading 1 item...`);
+        if (keys.length > 1) Util.colorLog("yellow", `Loading ${keys.length} items...`)
+
+        for (let key in configObject) {
+            try {
+                let value: TItem = configObject[key]
+                this._itemJSONWarehouse.set(value.key, value)
+                itemsLoaded++
+            } catch (e) {
+                Debug.logError(<string>e, `${require("path").basename(__filename)}`)
+            }
+        }
+
+        console.log(`${itemsLoaded} items loaded`)
+    }
+
+    /**UNDOCUMENTED */
     static doesItemExistInWarehouse(itemKey: string): boolean {
-        return this.itemJSONWarehouse.has(itemKey);
+        return this._itemJSONWarehouse.has(itemKey);
     }
 
-    static getItemFromWarehouse(iteKey: string): TItem | undefined {
-        return this.itemJSONWarehouse.get(iteKey)
+    /**UNDOCUMENTED */
+    static getItemFromWarehouse(itemKey: string): TItem | undefined {
+        return this._itemJSONWarehouse.get(itemKey)
     }
 
+    /**UNDOCUMENTED */
     static get ItemsArray(): TItem[] {
-        return [...this.itemJSONWarehouse.values()]
+        return [...this._itemJSONWarehouse.values()]
     }
 
+    /**UNDOCUMENTED */
     static get CraftableItemsArray(): TItem[] {
         let craftableItems: TItem[] = []
 
@@ -76,6 +80,7 @@ export class Handler {
         return craftableItems
     }
 
+    /**UNDOCUMENTED */
     static get CrateItemsArray(): TItem[] {
         let crateItems: TItem[] = []
 
@@ -86,7 +91,8 @@ export class Handler {
         return crateItems
     }
 
-    static get ItemJSONWarehouse(): Map<string, TItem> {
-        return this.itemJSONWarehouse
+    /**UNDOCUMENTED */
+    static get ItemWarehouse(): Map<string, TItem> {
+        return this._itemJSONWarehouse
     }
 }
