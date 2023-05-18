@@ -78,7 +78,7 @@ const commandFunction: ITextCommandFunc = async (message, args, client, authorAc
             itemDetails = `❌ Error ─ ${userAccount.items.get(itemKey)?.toLocaleString()} \n*ID* \`unknown\` ─ unknown`
             Debug.logError(`Attempted to list non-existant item "${itemKey}" in ${user.tag}'s inventory.`, `${require("path").basename(__filename)}`)
         }
-
+ 
         // add item entry to the page
         let isLastIteration = i == itemKeys.length - 1
         if (isLastIteration)
