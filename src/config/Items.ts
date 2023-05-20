@@ -11,7 +11,7 @@ export const cob: TItem = {
 
 export const cCrate: TItem = {
     name: "Cardboard Crate",
-    key: "cCrate",
+    key: "ccrate",
     discordEmojiID: "822570562382725173",
     itemType: EItemType.Item,
     shopData: {
