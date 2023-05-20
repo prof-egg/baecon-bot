@@ -19,10 +19,11 @@ client.on("ready", async () => {
 
     // Load commands and routines (cmd loader called here because client.guilds.cache is referenced, and you can't reference it until the client is "ready")
     Command.Handler.loadSlashCommandParentFolder(client, "dist/commands/slash_commands")
-    Command.Handler.loadTextCommandParentFolder(client, "dist/commands/text_commands")
+    Command.Handler.loadTextCommandParentFolder("dist/commands/text_commands")
 
     // Do item stuff
     Item.Handler.loadWarehouse("dist/config/items")
+    Item.Handler.loadItemFunctionFolder("dist/commands/item_functions", true)
 
     // Ready
     client.user?.setActivity(`${clientconfig.prefix}help`)
