@@ -72,7 +72,7 @@ const commandFunction: ITextCommandFunc = async (message, args, client, authorAc
     try {
         await authorAccount.save()
     } catch (e) {
-        msgSent.reply(`There was an error with finding ${message.author.username}'s account. Please try again later`)
+        msgSent.reply(`There was an error with finding ${message.author.username}'s account. Please try again later.`)
         Debug.logError(<string>e, `${require("path").basename(__filename)}`)
     }
 }

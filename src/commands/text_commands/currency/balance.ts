@@ -4,7 +4,7 @@ import Discord, { ColorResolvable } from "discord.js";
 import clientconfig from "../../../config/client.json";
 import colorconfig from "../../../config/colors.json";
 import Util from "../../../library/classes/Util";
-import { Manager } from "../../../library/classes/AccountManager";
+import * as Account from "../../../library/classes/AccountManager";
 import { Debug } from "../../../library/classes/Debug";
 
 const commandFunction: ITextCommandFunc = async (message, args, client, authorAccount) => {
@@ -18,12 +18,12 @@ const commandFunction: ITextCommandFunc = async (message, args, client, authorAc
     } else {
         user = message.mentions.users.first() || client.users.cache.get(args[0]);
         if (!user) return message.channel.send("I couldn't find that user.")
-        userAccount = await Manager.getUserAccount(user.id)
+        userAccount = await Account.Manager.getUserAccount(user.id)
     }
     
     if (!userAccount) {
         message.reply(`There was an error with finding ${user.username}'s account. Please try again later`)
-        Debug.logWarning(`Could not find ${user.username}'s account`, `${require("path").basename(__filename)}`)
+        Debug.logWarning(`Could not find ${user.tag}'s account`, `${require("path").basename(__filename)}`)
         return
     }
     

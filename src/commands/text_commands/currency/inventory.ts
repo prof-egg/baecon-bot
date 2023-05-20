@@ -31,7 +31,7 @@ const commandFunction: ITextCommandFunc = async (message, args, client, authorAc
 
     if (!userAccount) {
         message.reply(`There was an error with finding ${user.username}'s account. Please try again later`)
-        Debug.logWarning(`Could not find ${user.tag}'s account`, `${require("path").basename(__filename)}`)
+        Debug.logWarning(`Could not find ${user.username}'saccount. User: ${message.author.tag} (${message.author.id})`, `${require("path").basename(__filename)}`)
         return
     }
 

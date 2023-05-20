@@ -137,7 +137,7 @@ export class Handler {
      * This is used to load a command folder that houses slash command folders inside of it. This is so that if you have multiple slash command folders, intstead of calling `CommandHandler.loadSlashCommandFolder()`
      * on each one, you can move all those folders into a parent folder, and call `CommandHandler.loadSlashCommandParentFolder()` on that parent folder.
      */
-    static loadTextCommandParentFolder(client: Discord.Client, textCmdParentFolderPath: string): void {
+    static loadTextCommandParentFolder(textCmdParentFolderPath: string): void {
 
         try {
             var textCmdFolderArr = fs.readdirSync(textCmdParentFolderPath)
@@ -153,7 +153,7 @@ export class Handler {
             textCmdFolderArr[i] = `${textCmdParentFolderPath}/${textCmdFolderArr[i]}`
         }
 
-        this.loadTextCommandFolderArr(client, textCmdFolderArr)
+        this.loadTextCommandFolderArr(textCmdFolderArr)
     }
 
     /**
@@ -179,9 +179,9 @@ export class Handler {
         this.loadSlashCommandFolderArr(client, slashCmdFolderArr, registerSlashCmdGlobally)
     }
 
-    static loadTextCommandFolderArr(client: Discord.Client, textCmdFolderPathArr: string[]): void {
+    static loadTextCommandFolderArr(textCmdFolderPathArr: string[]): void {
         textCmdFolderPathArr.forEach((textCmdFolderPath) => {
-            this.loadTextCommandFolder(client, textCmdFolderPath)
+            this.loadTextCommandFolder(textCmdFolderPath)
         })
     }
 
@@ -191,7 +191,7 @@ export class Handler {
         })
     }
 
-    static loadTextCommandFolder(client: Discord.Client, textCmdFolderPath: string): void {
+    static loadTextCommandFolder(textCmdFolderPath: string): void {
 
         // load js files from folder into an array
         try {
@@ -213,7 +213,7 @@ export class Handler {
         // for each file load it
         jsfiles.forEach((file) => {
             let textCommandFilePath = `${textCmdFolderPath}/${file}`;
-            this.loadTextCommandFile(client, textCommandFilePath);
+            this.loadTextCommandFile(textCommandFilePath);
         })
 
         console.log(`${textCmdFolderName} commands loaded: ${this._cmdLoadedCount}`);
@@ -249,7 +249,7 @@ export class Handler {
         this._cmdLoadedCount = 0;
     }
 
-    static loadTextCommandFile(client: Discord.Client, textCmdFilePath: string): void {
+    static loadTextCommandFile(textCmdFilePath: string): void {
         let textCmdFileName = "";
         try {
             textCmdFileName = textCmdFilePath.split("/")[textCmdFilePath.split("/").length - 1]
