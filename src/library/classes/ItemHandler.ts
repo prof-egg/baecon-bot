@@ -9,8 +9,9 @@ export type TItem = {
     key: string,
     discordEmojiID: string,
     itemType: EItemType,
-    shopData: { shop?: { type: EItemShopType, tag: string, }, sellable: boolean, price: number }
-    craftingData?: { recipe: TItemCraftingIngrediant[], amountCrafted: number }
+    shopConfig: { shop?: { type: EItemShopType, tag: string, }, sellable: boolean, price: number },
+    craftingConfig?: { recipe: TItemCraftingIngrediant[], amountCrafted: number },
+    cooldown?: number
 }
 
 export type TItemCraftingIngrediant = {
@@ -56,8 +57,15 @@ export class Handler {
         return true;
     }
 
+    /**Checks if any functions are missing from the collection. All items marked `EItemType.Item` should have functions that go with them. */
+    static checkForMissingFuncs() {
+        this.ItemsArray.forEach((item) => {
+            if (!this.isItemFunctionLoaded(item.key)) Debug.logError(`Missing function for ${item.name}`, `${require("path").basename(__filename)}`)
+        })
+    }
+
     /**UNDOCUMENTED */
-    static loadItemFunctionFolder(itemFuncFolderPath: string, logDetails = false) {
+    static loadItemFuncsFromFolder(itemFuncFolderPath: string, logDetails = false) {
         // load js files from folder into an array
         try {
             var jsfiles = fs.readdirSync(itemFuncFolderPath).filter(f => f.split(".").pop() === "js");
@@ -74,14 +82,14 @@ export class Handler {
         let amountSuccesfullyLoaded = 0;
         jsfiles.forEach((file) => {
             let itemFuncFilePath = `${itemFuncFolderPath}/${file}`;
-            if (this.loadItemFunctionFile(itemFuncFilePath)) amountSuccesfullyLoaded++;
+            if (this.loadItemFuncFile(itemFuncFilePath)) amountSuccesfullyLoaded++;
         })
 
         if (logDetails) console.log(`${amountSuccesfullyLoaded} item functions loaded`)
     }
 
     /**Tries to load an item function from the given `itemFuncFilePath`. If succesful return true, else return false. `logDetails` by default is false. */
-    static loadItemFunctionFile(itemFuncFilePath: string, logDetails = false): boolean {
+    static loadItemFuncFile(itemFuncFilePath: string, logDetails = false): boolean {
 
         if (logDetails) Util.colorLog("yellow", `Loading ${itemFuncFilePath} item function...`)
         try { 
@@ -149,7 +157,7 @@ export class Handler {
         let craftableItems: TItem[] = []
 
         this.ItemsArray.forEach((item) => {
-            if (item.craftingData) craftableItems.push(item)
+            if (item.craftingConfig) craftableItems.push(item)
         })
 
         return craftableItems
@@ -160,7 +168,7 @@ export class Handler {
         let crateItems: TItem[] = []
 
         this.ItemsArray.forEach((item) => {
-            if (item.shopData.shop && item.shopData.shop.type == EItemShopType.Crate) crateItems.push(item)
+            if (item.shopConfig.shop && item.shopConfig.shop.type == EItemShopType.Crate) crateItems.push(item)
         })
 
         return crateItems

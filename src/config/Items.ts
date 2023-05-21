@@ -6,7 +6,7 @@ export const cob: TItem = {
     key: "cob",
     discordEmojiID: "738470510702362745",
     itemType: EItemType.Item,
-    shopData: { sellable: false, price: 125 },
+    shopConfig: { sellable: false, price: 125 },
 }
 
 export const cCrate: TItem = {
@@ -14,7 +14,7 @@ export const cCrate: TItem = {
     key: "ccrate",
     discordEmojiID: "822570562382725173",
     itemType: EItemType.Item,
-    shopData: {
+    shopConfig: {
         shop: {
             type: EItemShopType.Crate, 
             tag: "Worst crate and has a high chance to not give an item",
