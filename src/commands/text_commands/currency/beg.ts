@@ -14,6 +14,8 @@ const commandFunction: ITextCommandFunc = async (message, args, client, authorAc
 
     // COMMAND SETTINGS
     let cooldownData = cooldowns.beg
+    let minBegReward = 10
+    let maxBegReward = 40
 
     // Get user (Discord.User) and userAccount (TUserDoc)
     if (!authorAccount) {
@@ -53,7 +55,7 @@ const commandFunction: ITextCommandFunc = async (message, args, client, authorAc
         embed.setDescription(`A stranger gave you a ${Items.cob.name}!`)
     } else {
         // Get random amount of bits, add it to user account, and update cooldown
-        let bitsGathered = Util.getRandomInt(10, 40)
+        let bitsGathered = Util.getRandomInt(minBegReward, maxBegReward)
         authorAccount.wallet += bitsGathered
 
         // Set embed message 
@@ -68,7 +70,7 @@ const commandFunction: ITextCommandFunc = async (message, args, client, authorAc
         UserAccount.Manager.updateCooldown(authorAccount, cooldowns.beg) // saved on another line so that this can be commented out easily for testing
         await authorAccount.save()
     } catch (e) {
-        msgSent.reply(`There was an error with finding ${message.author.username}'s account. Please try again later`)
+        msgSent.reply(`There was an error with saving this data to your account. Please try again later.`)
         Debug.logError(<string>e, `${require("path").basename(__filename)}`)
     }
 }
