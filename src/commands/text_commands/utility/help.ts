@@ -14,7 +14,7 @@ const commandFunction: ITextCommandFunc = async (message, args, client) => {
         const helpCurrencyEmbed = new Discord.EmbedBuilder()
             .setTitle(":moneybag: Currency Commands")
             .setDescription("**Type b- before each command:**\n" +
-                "`balance`, `beg`, `deposit`, `withdraw`")
+                "`balance`, `beg`, `deposit`, `inventory`, `use`, `withdraw`")
             .setFooter({ text: `Baecon Bot Version: ${clientconfig.version}` })
             .setColor(colorconfig.main as ColorResolvable);
 
