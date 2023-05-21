@@ -35,6 +35,23 @@ export class Manager {
         })
     }
 
+    /**Returns the amount of a specified item that the user owns. If the item entry does not exist in the user's account, method returns 0.*/
+    static getItemAmount(account: TUserDoc, itemKey: string): number {
+        let itemAmount = account.items.get(itemKey)
+        if (!itemAmount) return 0
+        return itemAmount
+    }
+
+    /**DOCUMENTATION NEEDED */
+    static hasAtLeastOneOfItem(account: TUserDoc, itemKey: string): boolean {
+        let itemAmount = account.items.get(itemKey)
+        if (!itemAmount) return false
+
+        if (itemAmount < 1) return false
+
+        return true
+    }
+
     /**DOCUMENTATION NEEDED */
     static addItem(account: TUserDoc, itemKey: string, amount = 1, saveAccount = false): Promise<void> {
         return new Promise(async (resolve, reject) => {
