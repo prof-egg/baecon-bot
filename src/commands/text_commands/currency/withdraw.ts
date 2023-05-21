@@ -46,15 +46,17 @@ const commandFunction: ITextCommandFunc = async (message, args, client, authorAc
     else {
         // Since parseInt() returned undefined, check if its for certain allowed keywords, if not display help message
         if (enteredWithdrawal == "all") withdrawalAmount = authorAccount.bank
-        else if (enteredWithdrawal == "half") withdrawalAmount = Math.floor(authorAccount.bank / 2)
+        else if (enteredWithdrawal == "half") withdrawalAmount = Math.ceil(authorAccount.bank / 2)
         else return message.channel.send({ embeds: [helpEmbed] })
     }
+    if (withdrawalAmount > authorAccount.bank) withdrawalAmount = authorAccount.bank // Cap withdrawal to your bank amount
 
     // Check if the amount they are trying to deposit is less than the minimum withdrawal (1)
+    if (authorAccount.bank == 0) return message.channel.send(`Your bank is empty.`) // if their bank is empty, the calculation above will set the withdrawalAmount to 0, which will trigger the help embed.
     if (withdrawalAmount < minimumWithdrawal) return message.channel.send({ embeds: [helpEmbed] })
 
     // Check if they are trying to manually withdraw more than they have
-    if (withdrawalAmount > authorAccount.bank) return message.channel.send({ embeds: [Util.embedMessage("You don't have that many bits to withdraw.")] })
+    if (withdrawalAmount > authorAccount.bank) return message.channel.send({ embeds: [Util.embedMessage("You don't have that many bits to withdraw.")] }) // This line theoretically will never run but is included anyways just to be safe.
 
     // Do the transaction
     authorAccount.bank -= withdrawalAmount;

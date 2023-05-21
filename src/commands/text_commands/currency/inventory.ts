@@ -72,13 +72,13 @@ const commandFunction: ITextCommandFunc = async (message, args, client, authorAc
 
         // formate item entry
         let itemDetails = ""
-        if (itemInfo) {
+        if (itemInfo && Account.Manager.hasAtLeastOneOfItem(userAccount, itemInfo.key)) {
             itemDetails = `${Util.emoji(client, itemInfo.discordEmojiID)} ${itemInfo.name} ─ ${userAccount.items.get(itemKey)?.toLocaleString()} \n*ID* \`${itemInfo.key}\` ─ ${itemInfo.itemType}`
-        } else {
+        } else if (!itemInfo) {
             itemDetails = `❌ Error ─ ${userAccount.items.get(itemKey)?.toLocaleString()} \n*ID* \`unknown\` ─ unknown`
             Debug.logError(`Attempted to list non-existant item "${itemKey}" in ${user.tag}'s inventory.`, `${require("path").basename(__filename)}`)
         }
- 
+
         // add item entry to the page
         let isLastIteration = i == itemKeys.length - 1
         if (isLastIteration)
@@ -88,8 +88,10 @@ const commandFunction: ITextCommandFunc = async (message, args, client, authorAc
 
         // send data as a page
         if (pageData.length == itemsPerPage || isLastIteration) {
-            inventory.push(pageData)
-            pageData = "";
+            if (pageData != "") {
+                inventory.push(pageData)
+                pageData = "";
+            }
         }
     }
 
