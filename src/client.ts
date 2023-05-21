@@ -23,7 +23,8 @@ client.on("ready", async () => {
 
     // Do item stuff
     Item.Handler.loadWarehouse("dist/config/items")
-    Item.Handler.loadItemFunctionFolder("dist/commands/item_functions", true)
+    Item.Handler.loadItemFuncsFromFolder("dist/commands/item_functions", true)
+    Item.Handler.checkForMissingFuncs()
 
     // Ready
     client.user?.setActivity(`${clientconfig.prefix}help`)
