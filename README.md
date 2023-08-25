@@ -7,6 +7,7 @@ There are some things you need to do before you can run the source code.
   - MongoDB pass.
 - Create your own discord bot application using the discord developer portal and invite it to a server.
 - Replace all custom discord emoji IDs used by the bot.
+  
 Although the steps are listed, this repo isn't meant to be downloaded to be used functionally. It's just here for people who know what they are doing and want to peak inside for one reason or another.
 ## Gitignore oddities
 There are two things you don't need to worry about replacing that are listed in the `.gitignore` file. 
