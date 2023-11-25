@@ -1,4 +1,11 @@
-# Downloading the source code
+# About this project
+This fun passion/hobby project that I like to work on here and there, it helps me practice using git and of course typescipt. I'm not exactly invested in this project either so no pull requests or anything like that, just something I like to work on from time to time. This is the fourth version I have of the bot. I lost the code for the first version, I ended up scrapping the second version after working on it for a long time for a cleaner codebase, and then the third version didn't get very far at all before I rebooted to get the fourth version which would be written in TypeScript instead of JavaScript.
+
+## Features
+- MongoDB `database storage`.
+- Text and slash `command loading`.
+- Interactive card game (not yet actually but I'll forget to add it in the feature section once it is implemented)
+## Downloading the source code
 There are some things you need to do before you can run the source code.
 - Download any node-js dependencies listed in the `package.json` file.
 - Download the typescript compiler.
