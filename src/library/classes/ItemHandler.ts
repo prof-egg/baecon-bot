@@ -153,6 +153,17 @@ export class Handler {
     }
 
     /**UNDOCUMENTED */
+    static get ShopItemsArray(): TItem[] { 
+        let shopItems: TItem[] = []
+
+        this.ItemsArray.forEach((item) => {
+            if (item.shopConfig.shop?.type == EItemShopType.Regular) shopItems.push(item)
+        })
+
+        return shopItems
+    }
+
+    /**UNDOCUMENTED */
     static get CraftableItemsArray(): TItem[] {
         let craftableItems: TItem[] = []
 
