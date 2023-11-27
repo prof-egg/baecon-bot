@@ -10,9 +10,21 @@ import cooldowns from "../../../config/cooldowns.json"
 import colorconfig from "../../../config/colors.json";
 import clientconfig from "../../../config/client.json";
 
+const helpEmbed = new Discord.EmbedBuilder()
+        .setTitle("Use Command")
+        .setDescription("**Syntax:** `b-buy [itemID] (amount)`")
+        .addFields({
+            name: "Description:", value:
+                `Lets you buy any item available in the shop.`
+        })
+        .setFooter({ text: "This is being shown because you used unrecognized command syntax." })
+        .setColor(colorconfig.main as ColorResolvable)
+
+
 const commandFunction: ITextCommandFunc = async (message, args, client, authorAccount) => {
 
     let enteredItemKey = args[0]
+    if (!enteredItemKey) return message.channel.send({ embeds: [helpEmbed] })
 
     // Get user (Discord.User) and userAccount (TUserDoc)
     if (!authorAccount) {
