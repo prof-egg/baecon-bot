@@ -23,3 +23,19 @@ export const cCrate: TItem = {
         price: 500
     },
 }
+
+export const grill: TItem = {
+    name: "Grill",
+    key: "grill",
+    discordEmojiID: "822570181946507365",
+    itemType: EItemType.Item,
+    shopConfig: {
+        shop: {
+            type: EItemShopType.Regular,
+            tag: "You can use your grill to cook some delicious bacon!"
+        },
+        sellable: true,
+        price: 5000
+    },
+    cooldown: 60000
+}
