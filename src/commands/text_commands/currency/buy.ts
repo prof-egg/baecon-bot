@@ -11,7 +11,7 @@ import colorconfig from "../../../config/colors.json";
 import clientconfig from "../../../config/client.json";
 
 const helpEmbed = new Discord.EmbedBuilder()
-        .setTitle("Use Command")
+        .setTitle("Buy Command")
         .setDescription("**Syntax:** `b-buy [itemID] (amount)`")
         .addFields({
             name: "Description:", value:
