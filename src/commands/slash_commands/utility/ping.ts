@@ -30,6 +30,6 @@ const slashCmdBuildData = new Discord.SlashCommandBuilder()
     .setDescription("Get client and websocket ping")
     .toJSON()
 
-const tags: ECommandTags[] = [ECommandTags.Utility]
+const tags: ECommandTags[] = [ECommandTags.Complete, ECommandTags.Utility]
 
 export { commandFunction, slashCmdBuildData, tags }

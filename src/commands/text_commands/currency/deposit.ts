@@ -84,6 +84,6 @@ const nameData = {
     aliases: ["dep"]
 }
 
-const tags: ECommandTags[] = [ECommandTags.Currency]
+const tags: ECommandTags[] = [ECommandTags.Currency, ECommandTags.Complete]
 
 export { commandFunction, nameData, tags }

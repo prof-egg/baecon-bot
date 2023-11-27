@@ -1,5 +1,4 @@
 import Discord, { ColorResolvable } from "discord.js";
-import clientconfig from "../../config/client.json";
 import colorconfig from "../../config/colors.json";
 import Util from "../../library/classes/Util";
 import * as Account from "../../library/classes/AccountManager";
@@ -7,7 +6,6 @@ import { Debug } from "../../library/classes/Debug";
 import { cob } from "../../config/Items";
 import { IItemFunc } from "../../library/classes/ItemHandler";
 import emojiID from "../../config/emoji.json"
-import { utimes } from "fs";
 
 const itemFunction: IItemFunc = async (client, message, args, authorAccount, itemData) => {
 
@@ -18,7 +16,7 @@ const itemFunction: IItemFunc = async (client, message, args, authorAccount, ite
     // Define help embed
     const helpEmbed = new Discord.EmbedBuilder()
         .setTitle(`Use Command: ${cob.name}`)
-        .setDescription("**Syntax:** `b-use cob (amount)`")
+        .setDescription(`**Syntax:** \`b-use ${cob.key} (amount)\``)
         .addFields({
             name: "Description:", value:
                 "Opens a container of bacon and rewards you with bacon bits."

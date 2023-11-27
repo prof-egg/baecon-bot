@@ -16,11 +16,11 @@ const commandFunction: ITextCommandFunc = async (message, args, client, authorAc
         Debug.logWarning(`Could not find ${message.author.username}'s account`, `${require("path").basename(__filename)}`)
         return
     }
-
+    
     // Define help embed as it is used in multiple lines
     const helpEmbed = new Discord.EmbedBuilder()
         .setTitle("Use Command: General")
-        .setDescription("**Syntax:** `b-use [itemID]`")
+        .setDescription("**Syntax:** `b-use [itemID] (amount)`")
         .addFields({
             name: "Description:", value:
                 `Let's you use the function of an item in your inventory that has the tag "Item" or "Tool."`
@@ -44,7 +44,8 @@ const commandFunction: ITextCommandFunc = async (message, args, client, authorAc
     let succesfulExecution = Item.Handler.executeItemFunction(inputtedItemKey, client, message, args, authorAccount, itemData)
     if (!succesfulExecution) {
         message.reply(`There was an error with executing the item function. Please try again later.`)
-        Debug.logError(`Failed item execution with key "${inputtedItemKey}. User: ${message.author.tag} (${message.author.id})"`, `${require("path").basename(__filename)}`)
+        Debug.logError(`Failed item execution with key "${inputtedItemKey}." User: ${message.author.tag} (${message.author.id}).`, `${require("path").basename(__filename)}`)
+        console.log(message)
     }
 }
 
@@ -53,6 +54,6 @@ const nameData = {
     aliases: []
 }
 
-const tags: ECommandTags[] = [ECommandTags.Currency]
+const tags: ECommandTags[] = [ECommandTags.Currency, ECommandTags.Complete]
 
 export { commandFunction, nameData, tags }
