@@ -121,6 +121,6 @@ const nameData = {
     aliases: ["bj"]
 }
 
-const tags: ECommandTags[] = [ECommandTags.Currency]
+const tags: ECommandTags[] = [ECommandTags.Currency, ECommandTags.Incomplete]
 
 export { commandFunction, nameData, tags }
