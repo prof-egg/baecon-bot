@@ -17,8 +17,11 @@ require("./commands/routines/catchwarnings")
 
 client.on("ready", async () => {
 
+    // Cache the client
+    Command.Handler.cacheClient(client)
+
     // Load commands and routines (cmd loader called here because client.guilds.cache is referenced, and you can't reference it until the client is "ready")
-    Command.Handler.loadSlashCommandParentFolder(client, "dist/commands/slash_commands")
+    Command.Handler.loadSlashCommandParentFolder("dist/commands/slash_commands")
     Command.Handler.loadTextCommandParentFolder("dist/commands/text_commands")
 
     // Do item stuff
@@ -45,10 +48,12 @@ client.on("interactionCreate", async (interaction) => {
 // handle text commands
 client.on("messageCreate", async (message) => {
 
-    // Return if event is in dm channel, is created by a bot, or doesnt start with bot prefix NOTE: make it so the clientconfig prefix section is an array of acceptable prefixes
+    // Return if event is in dm channel, is created by a bot, doesnt start with bot prefix, or isnt a completed command
+    // NOTE: make it so the clientconfig prefix section is an array of acceptable prefixes
     if (message.channel.type == Discord.ChannelType.DM) return;
     if (message.author.bot) return;
     if (!message.content.startsWith(clientconfig.prefix)) return;
+    if (Command.Handler.textCommandHasTag(message, Command.ECommandTags.Incomplete) || !Command.Handler.textCommandHasTag(message, Command.ECommandTags.Complete)) return
 
     // ADD A COOLDOWN SECTION RIGHT HERE
 
