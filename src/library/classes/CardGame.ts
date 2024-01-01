@@ -1,3 +1,5 @@
+import { Debug } from "./Debug";
+
 export class CardGame {
 
     private _house: IPlayer = { name: "House", cards: [] }
@@ -12,7 +14,7 @@ export class CardGame {
             this._players.set(playerObject.name, playerObject)
         });
     }
-    
+
     // editHand(indexArray: number[],  playerKey?: string): void {
 
     //     let cardArrayToEdit = this._house.cards
@@ -28,33 +30,27 @@ export class CardGame {
     // }
 
     /**DOCUMENTATION NEEDED. If an invalid `playerKey` is passed, method returns an empty string.*/
-    getHandAsString(options: { cardCount?: number, spaceFiller?: string, playerKey?: string }): string {
+    getHandAsString(options: { cardsShown?: number, delimiter?: string, playerKey?: string }): string {
 
         // Set defaults for the options and assign stuff if passed\
-        let hand = this._house.cards
-        if (options.playerKey) {
-            let player = this._players.get(options.playerKey)
-            if (!player) return ""
-            hand = player.cards
-        }
+        let hand = this._getHandFromPlayerKey(options.playerKey)
 
-        let cardCount = hand.length
-        if (options.cardCount) cardCount = options.cardCount
+        let cardsToShow = hand.length
+        if (options.cardsShown) cardsToShow = options.cardsShown
 
-        let spaceFiller = ""
-        if (options.spaceFiller) spaceFiller = options.spaceFiller
+        let delimiter = ""
+        if (options.delimiter) delimiter = options.delimiter
 
         // Make the string
         let handAsString = ""
-        let i = 0;
-        for (i = 0; i < cardCount - 1; i++) // Run until just before the end because there doesn't need to be filler on the last loop
-            handAsString += `${hand[i].face}${hand[i].suit}${spaceFiller}`
+        for (var i = 0; i < cardsToShow - 1; i++) // Run until just before the end because there doesn't need to be filler on the last loop
+            handAsString += `${hand[i].face}${hand[i].suit}${delimiter}`
         handAsString += `${hand[i].face}${hand[i].suit}`
-        
+
         return handAsString
     }
 
-    /**Function idea to stop repeating code, but this returns a new array, instead of pointing to the existing one */
+    /**Returns player hand pointer (maybe) */
     private _getHandFromPlayerKey(playerKey?: string): Card[] {
         if (playerKey) {
             let player = this._players.get(playerKey)
@@ -64,15 +60,30 @@ export class CardGame {
         return this._house.cards
     }
 
+
+    /**EXPIRIMENTAL: DOCUMENTATION NEEDED */
+    editCardsInHand(cardIndecies: number[], newCardChanges: { face?: TCardFace, value?: number, suit?: TCardSuit }[], playerKey?: string): void {
+
+        if (cardIndecies.length != newCardChanges.length) {
+            Debug.logError("cardIndecies length and newCardChanges length do not match")
+            throw new SyntaxError()
+        }
+
+        let hand = this._getHandFromPlayerKey(playerKey)
+
+        for (let i = 0; i < cardIndecies.length; i++) {
+            let { face, value, suit } = newCardChanges[i]
+
+            if (face) hand[cardIndecies[i]].face = face
+            if (value) hand[cardIndecies[i]].value = value
+            if (suit) hand[cardIndecies[i]].suit = suit
+        }
+    }
+
     /**DOCUMENTATION NEEDED */
     editCardInHand(cardIndex: number, newCardChanges: { face?: TCardFace, value?: number, suit?: TCardSuit }, playerKey?: string): void {
 
-        let hand = this._house.cards
-        if (playerKey) {
-            let player = this._players.get(playerKey)
-            if (!player) return 
-            hand = player.cards
-        }
+        let hand = this._getHandFromPlayerKey(playerKey)
 
         let { face, value, suit } = newCardChanges
 
@@ -87,12 +98,7 @@ export class CardGame {
         let filteredMatchIndexes: number[] = []
 
         // Get either the house cards, or the player cards. If player not found return an empty array
-        let cardsToFilter = this._house.cards
-        if (playerKey) {
-            let player = this._players.get(playerKey)
-            if (!player) return []
-            cardsToFilter = player.cards
-        }
+        let cardsToFilter = this._getHandFromPlayerKey(playerKey)
 
         // Filter and push indexes
         for (let i = 0; i < cardsToFilter.length; i++) {
@@ -134,21 +140,19 @@ export class CardGame {
     drawCard(drawOptions?: { playerKey?: string, amount?: number }): void {
 
         // If now draw options were input, draw one card for the house
-        if (!drawOptions) return <unknown>this._house.cards.push(this._getCard()) as void
+        if (!drawOptions) {
+            this._house.cards.push(this._getCard())
+            return
+        }
 
         let { playerKey, amount } = drawOptions
         if (!amount) amount = 1 // Set default in here since you cant in the parameter
 
-        if (!playerKey) {
-            for (let i = 0; i < amount; i++)
-                this._house.cards.push(this._getCard())
-        } else {
-            let player = this._players.get(playerKey)
-            if (!player) return
+        let hand = this._getHandFromPlayerKey(playerKey)
 
-            for (let i = 0; i < amount; i++)
-                player.cards.push(this._getCard())
-        }
+        for (let i = 0; i < amount; i++)
+            hand.push(this._getCard())
+
     }
 
     /**Returns a random card from the deck. If there are no cards left to draw, first make a new deck and draw a random card from that new deck. */
